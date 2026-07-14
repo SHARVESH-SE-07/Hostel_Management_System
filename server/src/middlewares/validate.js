@@ -1,0 +1,1 @@
+import AppError from '../utils/AppError.js'; export const validate=(schema,part='body')=>(req,res,next)=>{const out=schema.safeParse(req[part]);if(!out.success)return next(new AppError(out.error.issues.map(x=>x.message).join(', '),422));req[part]=out.data;next();};

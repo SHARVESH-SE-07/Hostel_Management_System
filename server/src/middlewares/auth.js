@@ -1,0 +1,3 @@
+import jwt from 'jsonwebtoken'; import User from '../models/User.js'; import AppError from '../utils/AppError.js';
+export const protect=async(req,res,next)=>{const token=req.headers.authorization?.replace('Bearer ',''); if(!token)return next(new AppError('Authentication required',401)); try{const data=jwt.verify(token,process.env.JWT_ACCESS_SECRET);req.user=await User.findById(data.sub);if(!req.user)throw Error();next();}catch{next(new AppError('Invalid or expired access token',401));}};
+export const authorize=(...allowed)=>(req,res,next)=>allowed.includes(req.user.role)?next():next(new AppError('You are not authorized for this action',403));
